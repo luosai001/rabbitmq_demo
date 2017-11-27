@@ -1,0 +1,35 @@
+spring:
+  cloud:
+    stream:
+      bindings:
+        output:              #发布 --绑定的输出管道
+          destination: dest # 发布topic
+          binder: rabbit
+        input:               #订阅 --绑定的输入管道
+          destination: dest #订阅topic
+          binder: rabbit
+          group: topic1
+          concurrency: 3    #消费者个数
+
+        outputUser:
+          destination: destUser
+          binder: rabbit
+        inputUser:
+          destination: destUser
+          binder: rabbit
+          prefetch: 1
+          concurrency: 3    #消费者个数
+
+          group: topit-user   #组 类似kafka 里的组 ,一个组只能有一个消费者消费
+#     多个绑定 需要在resources/META_INF 创建 spring.binders  内容如：rabbit:org.springframework.cloud.stream.binder.rabbit.config.RabbitServiceAutoConfiguration
+      binders:
+        rabbit:
+          type: rabbit    # spring.binders 文件中的key  表示类型
+          environment:
+            spring:
+              rabbitmq:
+                host: 127.0.0.1
+                port: 5672
+logging:
+  file: info.log
+
